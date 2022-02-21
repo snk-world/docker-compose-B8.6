@@ -11,13 +11,16 @@ x-logging: &logging
 services:
   php:
     build: .
-    depends_on: 
-       nginx:
-         condition: service_healthy
     networks: 
      - net
     logging: *logging
-    restart: always
+    
+    healthcheck:
+        test: ["CMD-SHELL","curl -f http://nginx/ | grep works"]
+        interval: 1s
+        timeout: 3s
+        retries: 30
+
 
   nginx:
     image: "nginx"
@@ -32,8 +35,11 @@ services:
              cpus: "1"
              memory: "20M"
     volumes:
-       - ./nginx/dev.conf:/etc/nginx/nginx.conf
+       - ./nginx/:/etc/nginx/conf.d/
        - ./www:/var/www
+    
+    depends_on:
+       - php    
 
     healthcheck: 
         test: ["CMD-SHELL","curl -f http://nginx/ | grep works"] 
