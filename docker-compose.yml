@@ -21,6 +21,9 @@ services:
         timeout: 3s
         retries: 30
 
+    volumes:
+       - ./www:/var/www
+       - ./www:/var/www/html/
 
   nginx:
     image: "nginx"
