@@ -44,11 +44,6 @@ services:
     depends_on:
        - php    
 
-    healthcheck: 
-        test: ["CMD-SHELL","curl -f http://nginx/ | grep works"] 
-        interval: 1s
-        timeout: 3s
-        retries: 30 
 
 networks:
   net:
