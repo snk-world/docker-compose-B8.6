@@ -11,14 +11,13 @@ x-logging: &logging
 services:
   php:
     build: .
-    ports:
-     - "127.0.0.1:5000:5000"
     depends_on: 
        nginx:
          condition: service_healthy
     networks: 
      - net
     logging: *logging
+    restart: always
 
   nginx:
     image: "nginx"
@@ -30,10 +29,14 @@ services:
     deploy:
        resources:
           limits:
-             cpus: "${DOCKER_REDIS_CPU:-0}"
-             memory: "${DOCKER_REDIS_MEMORY:-0}"
+             cpus: "1"
+             memory: "20M"
+    volumes:
+       - ./nginx/dev.conf:/etc/nginx/nginx.conf
+       - ./www:/var/www
+
     healthcheck: 
-        test: ["CMD-SHELL","curl -f http://nginx/"] 
+        test: ["CMD-SHELL","curl -f http://nginx/ | grep works"] 
         interval: 1s
         timeout: 3s
         retries: 30 
